@@ -1,0 +1,21 @@
+#PROGRAM 04: Find-S Algorithm
+import pandas as pd
+
+def find_s_algorithm(file_path):
+    df = pd.read_csv(file_path)
+    
+    print("Training Data:\n", df)
+    
+    target_col = df.columns[-1]
+    positive_cases = df[df[target_col] == 'Yes'].iloc[:, :-1].values
+    
+    hypothesis = list(positive_cases[0])
+    
+    for row in positive_cases[1:]:
+        for i in range(len(hypothesis)):
+            if hypothesis[i] != row[i]:
+                hypothesis[i] = '?'
+                
+    return hypothesis
+    
+print("\nThe final hypothesis is:", find_s_algorithm(r"C:\Users\gagan\Downloads\training_data - training_data.csv"))
