@@ -1,0 +1,15 @@
+#PROGRAM 2: Correlation Matrix & Pair Plot
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.datasets import fetch_california_housing
+
+data = fetch_california_housing(as_frame=True).frame
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(data.corr(), annot=True, cmap='coolwarm', fmt='.2f') 
+plt.title('Correlation Heatmap')
+plt.show()
+
+sns.pairplot(data.sample(500), corner=True, diag_kind='kde', plot_kws={'alpha': 0.5})
+plt.suptitle('Pair Plot', y=1.02)
+plt.show()
