@@ -1,0 +1,39 @@
+#Program 10: K-Means Clustering & PCA Visualization
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+data = load_breast_cancer()
+x, y = data.data, data.target
+
+print("Data shape:", x.shape)
+print("Classes:", data.target_names)
+
+x_scaled = StandardScaler().fit_transform(x)
+
+kmeans = KMeans(n_clusters=2, random_state=42, n_init=10)
+clusters = kmeans.fit_predict(x_scaled)
+labels_mapped = np.where(clusters == 1, 0, 1)
+
+print("\nConfusion Matrix")
+print(confusion_matrix(y, labels_mapped))
+print("Accuracy:", accuracy_score(y, labels_mapped))
+
+x_pca = PCA(n_components=2).fit_transform(x_scaled)
+
+plt.figure(figsize=(10, 6))
+plt.scatter(x_pca[:, 0], x_pca[:, 1], c=clusters, cmap='viridis', alpha=0.6)
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1],
+            s=250, marker='x', c='red', label='Centroids')
+plt.title("K-Means Clustering of Breast Cancer Dataset (PCA-2D)")
+plt.xlabel("PCA Component 1")
+plt.ylabel("PCA Component 2")
+plt.legend()
+plt.grid(True)
+plt.show()
