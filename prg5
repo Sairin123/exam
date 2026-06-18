@@ -1,0 +1,33 @@
+#PROGRAM 05: KNN Classifier & Decision Boundaries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
+
+np.random.seed(42)
+X = np.random.rand(100, 1) 
+X_train, X_test = X[:50], X[50:]
+
+y_train = np.where(X_train <= 0.5, 1, 2).flatten()
+
+k_values = [1, 3, 5, 20, 30]
+train_results = pd.DataFrame({"X_train": X_train.flatten(), "Actual_Class": y_train})
+test_results = pd.DataFrame({"X_test": X_test.flatten()})
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X_train, [-1]*len(X_train), c=y_train, marker='s', cmap='bwr')
+
+for i, k in enumerate(k_values):
+    preds = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train).predict(X_test)
+    test_results[f"Pred_k={k}"] = preds
+    
+    plt.scatter(X_test, [i]*len(X_test), c=preds, marker='o', cmap='bwr')
+
+plt.axvline(x=0.5, color='black', linestyle='--')
+plt.yticks([-1] + list(range(len(k_values))), ["Train Data"] + [f"k={k}" for k in k_values])
+plt.title("KNN: Decision Boundaries across different K values")
+plt.grid(True)
+plt.show()
+
+print("\n========== TRAINING DATA ==========\n", train_results.head())
+print("\n========== TEST DATA ==========\n", test_results.head())
