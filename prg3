@@ -1,0 +1,23 @@
+#PROGRAM 3: PCA & Scatter Plot
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+
+iris = load_iris()
+
+X_pca = PCA(n_components=2).fit_transform(iris.data)
+
+plt.figure(figsize=(8, 6))
+sns.scatterplot(
+    x=X_pca[:, 0], 
+    y=X_pca[:, 1], 
+    hue=iris.target_names[iris.target],  
+    palette=['red', 'green', 'blue']
+)
+
+plt.title('PCA on Iris Dataset')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.grid(True)
+plt.show()
