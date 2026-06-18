@@ -1,0 +1,45 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+
+# Generate data
+np.random.seed(42)
+x = np.random.rand(100, 1)
+
+# Labels: 1 if x <= 0.5 else 2
+y_train = np.where(x[:50].flatten() <= 0.5, 1, 2)
+y_test = np.where(x[50:].flatten() <= 0.5, 1, 2)
+
+X_train = x[:50]
+X_test = x[50:]
+
+k_values = [1, 2, 3, 4, 5, 20, 30]
+
+print("Results:")
+for k in k_values:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+
+    y_pred = knn.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+
+    print(f"k = {k}, Accuracy = {acc:.2f}")
+
+# Visualization
+plt.figure(figsize=(8, 5))
+
+for k in k_values:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+
+    y_pred_all = knn.predict(x)
+
+    plt.scatter(x, [k] * 100, c=y_pred_all, cmap="viridis")
+
+plt.yticks(k_values)
+plt.xlabel("x values")
+plt.ylabel("k values")
+plt.title("k-NN Classification for Different k")
+plt.colorbar(label="Class")
+plt.show()
