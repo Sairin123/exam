@@ -1,0 +1,30 @@
+#Program 06: LWR with Different Tau Values
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def gaussian_kernel(x, x_q, tau):
+    return np.exp(-np.square(x - x_q) / (2 * tau**2))
+
+def lwr(x_train, y_train, x_q, tau):
+    X = np.c_[np.ones(len(x_train)), x_train]
+    W = np.diag(gaussian_kernel(x_train, x_q, tau))
+    theta = np.linalg.pinv(X.T @ W @ X) @ (X.T @ W @ y_train)
+    return np.array([1, x_q]) @ theta
+
+
+np.random.seed(42)
+x = np.linspace(0, 10, 100)
+y = np.sin(x) + np.random.normal(0, 0.2, 100)
+
+
+plt.figure(figsize=(12, 8))
+for tau in [0.1, 0.5, 1, 5]:
+    y_pred = [lwr(x, y, xq, tau) for xq in x]
+    plt.plot(x, y_pred, label=f'tau={tau}')
+
+plt.scatter(x, y, color='black', label='Training Data', alpha=0.5)
+plt.xlabel('X'); plt.ylabel('Y')
+plt.title('Locally Weighted Regression (LWR) with Different Tau Values')
+plt.legend()
+plt.show()
